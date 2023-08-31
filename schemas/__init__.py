@@ -3,15 +3,7 @@ from datetime import datetime
 from typing import Text
 from uuid import uuid4
 
-class Task(BaseModel):
-    id: str
-    id_user: str
-    title: str
-    summary: Text
-    dateIni: datetime = datetime.now()
-    dateEnd: datetime
-    completed: bool = False
-    deleted: bool = False
+# For Users
 
 class User(BaseModel):
     id: str
@@ -20,4 +12,14 @@ class User(BaseModel):
     lastName: str
     email: str
     password: str
+    deleted: bool = False
+
+class Task(BaseModel):
+    id: str = str(uuid4)
+    id_user: str
+    title: str
+    summary: Text
+    dateIni: datetime = datetime.now()
+    dateEnd: datetime
+    completed: bool = False
     deleted: bool = False
