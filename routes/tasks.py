@@ -51,7 +51,7 @@ async def update_task(id_user: str, id: str, task: Task):
         # Search for task in database
         task_find = next((i for i, task in enumerate(task) if task['id_user'] == id_user and task["id"] == id and task['deleted'] == False), None)
         if task_find != None:
-            # These lines should not be there because the "user" parameter contains all the data in addition to the modified ones.
+            # These lines should not be there because the "task" parameter contains all the data in addition to the modified ones.
             task.id_user = id_user
             task.id = id
             tasks[task_find] = jsonable_encoder(task)
