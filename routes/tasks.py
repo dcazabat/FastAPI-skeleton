@@ -11,8 +11,8 @@ from config import tasks
 task = APIRouter()
 
 #Method for Task
-@task.get('/{id_user}')
-def get_all_task(id_user: str):
+@task.get('/{id_user}', tags=['Tasks'])
+async def get_all_task(id_user: str):
     # Send all task of user
     task_dict = {}
     if tasks.__len__() > 0:
@@ -24,8 +24,8 @@ def get_all_task(id_user: str):
     # If not found, return 404
     raise HTTPException(status_code=404, detail=f'task: not found')
 
-@task.get('/{id_user}/{id}')
-def get_task(id_user: str, id: str):
+@task.get('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
+async def get_task(id_user: str, id: str):
     # Check if task exists
     if tasks.__len__() > 0:
         # Search for task in database
@@ -37,29 +37,32 @@ def get_task(id_user: str, id: str):
     # If not found, return 404
     raise HTTPException(status_code=404, detail='task: not found')
 
-@task.post('/{id_user}')
-def create_task(id_user: str, task: Task):
+@task.post('/{id_user}',response_model=Task , tags=['Tasks'])
+async def create_task(id_user: str, task: Task):
     task.id = uuid4()
     task.id_user = id_user
     tasks.append(jsonable_encoder(task))
     return task
 
-@task.put('/{id_user}/{id}')
-def update_task(id_user: str, id: str, task: Task):
+@task.put('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
+async def update_task(id_user: str, id: str, task: Task):
     # Check if task exists
     if task.__len__() > 0:
         # Search for task in database
         task_find = next((i for i, task in enumerate(task) if task['id_user'] == id_user and task["id"] == id and task['deleted'] == False), None)
         if task_find != None:
-            task[task_find] = jsonable_encoder(task)
-            return task[task_find]
+            # These lines should not be there because the "user" parameter contains all the data in addition to the modified ones.
+            task.id_user = id_user
+            task.id = id
+            tasks[task_find] = jsonable_encoder(task)
+            return tasks[task_find]
         # If not found, return 404
         raise HTTPException(status_code=404, detail=f'task: {id} not found')
     # If not found, return 404
     raise HTTPException(status_code=404, detail='task: not found')
 
-@task.delete('/{id_user}/{id}')
-def delete_task(id_user: str, id: str):
+@task.delete('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
+async def delete_task(id_user: str, id: str):
     # Check if task exists
     if task.__len__() > 0:
         # Search for task in database

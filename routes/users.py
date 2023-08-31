@@ -11,9 +11,11 @@ from config import users
 user = APIRouter()
 
 #Method for Users
-@user.get('')
-def get_all_users():
+@user.get('', tags=['Users'])
+async def get_all_users():
+    from pprint import pprint
     # Send all users
+    pprint(users)
     users_dict = {}
     if users.__len__() > 0:
         for user in users:
@@ -24,8 +26,8 @@ def get_all_users():
     # If not found, return 404
     raise HTTPException(status_code=404, detail=f'Users: not found')
 
-@user.get('/{id}')
-def get_user(id: str):
+@user.get('/{id}', response_model=User, tags=['Users'])
+async def get_user(id: str):
     # Check if users exists
     if users.__len__() > 0:
         # Search for user in database
@@ -37,19 +39,21 @@ def get_user(id: str):
     # If not found, return 404
     raise HTTPException(status_code=404, detail='Users: not found')
 
-@user.post('')
-def create_user(user: User):
-    user.id = uuid4()
+@user.post('', response_model=User, tags=['Users'])
+async def create_user(user: User):
+    user.id = str(uuid4())
     users.append(jsonable_encoder(user))
     return user
 
-@user.put('/{id}')
-def update_user(id: str, user: User):
+@user.put('/{id}', response_model=User, tags=['Users'])
+async def update_user(id: str, user: User):
     # Check if users exists
     if users.__len__() > 0:
         # Search for user in database
         user_find = next((i for i, user in enumerate(users) if user["id"] == id and user['deleted'] == False), None)
         if user_find != None:
+            print(jsonable_encoder(user))
+            user.id = id # This line should not be there because the "user" parameter contains all the data in addition to the modified ones.
             users[user_find] = jsonable_encoder(user)
             return users[user_find]
         # If not found, return 404
@@ -57,8 +61,8 @@ def update_user(id: str, user: User):
     # If not found, return 404
     raise HTTPException(status_code=404, detail='Users: not found')
 
-@user.delete('/{id}')
-def delete_user(id: str):
+@user.delete('/{id}', response_model=User, tags=['Users'])
+async def delete_user(id: str):
     # Check if users exists
     if users.__len__() > 0:
         # Search for user in database
