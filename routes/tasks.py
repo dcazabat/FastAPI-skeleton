@@ -39,7 +39,7 @@ async def get_task(id_user: str, id: str):
 
 @task.post('/{id_user}',response_model=Task , tags=['Tasks'])
 async def create_task(id_user: str, task: Task):
-    task.id = uuid4()
+    task.id = str(uuid4())
     task.id_user = id_user
     tasks.append(jsonable_encoder(task))
     return task
