@@ -1,14 +1,44 @@
 from schemas import User
 from models import UserDB
-import uuid
+from cnx import SessionLocal
 
+# Function to get all Users 
+def getUsers():
+    try:
+        db = SessionLocal()
+        users_db = db.query(UserDB).all()
+        if users_db:
+            db.close()
+            return users_db
+        return None
+    except Exception as e:
+        raise e
+    finally:
+        db.close()
+# Function to get one task
+def get_userId(id: str):
+    try:
+        db = SessionLocal()
+        user = db.query(UserDB).filter(UserDB.id == id).first()
+        db.close()
+
+        return user
+    except Exception as e:
+        raise e
+    
+# Creation of "user" is used in the "POST" method
 def create_user(user: UserDB):
     try:
         db = SessionLocal()
-        new_user = users(nombre=user.nombre, edad=user.edad, correo=user.correo)
+        new_user = User(
+                    name=user.name,
+                    firstName=user.firstName,
+                    lastName=user.lastName,
+                    email=user.email,
+                    password=user.password,
+                    deleted=user.deleted)
         db.add(new_user)
         db.commit()
-        db.refresh(new_user)
         return new_user
     except Exception as e:
         db.rollback()
@@ -16,60 +46,36 @@ def create_user(user: UserDB):
     finally:
         db.close_all()
 
-
-# Función para obtener todos los usuarios
-def getUsers():
-    db = SessionLocal()
-    users_db = db.query(users).all()
-    db.close()
-    return users_db
-
-
-def get_userId(id: uuid.UUID):
+# Function to get update the "User" is used in "PUT" methods
+def update_user(id: str, updated_user: User):
     try:
         db = SessionLocal()
-        user = db.query(users).filter(users.id == id).first()
-        db.close()
-
-        return user
-    except Exception as e:
-        raise e
-
-
-def update_user(id: uuid.UUID, updated_user: updateUser):
-    try:
-        db = SessionLocal()
-        user = db.query(users).filter(users.id == id).first()
-
+        user = db.query(UserDB).filter(UserDB.id == id).first()
         if user:
-            # Actualizar los campos del usuario con los valores proporcionados en updated_user
             user.nombre = updated_user.nombre
             user.edad = updated_user.edad
             user.correo = updated_user.correo
-
             db.commit()
-            db.refresh(user)
-
-            db.close()
             return user
-        else:
-            db.close()
-            return None
+        return None
     except Exception as e:
         db.rollback()
         raise e
+    finally:
+        db.close()
 
+# Function to remove a "User" by their ID
+def deleteUser(id: str):
+    try:
+        db = SessionLocal()
+        user = db.query(UserDB).filter(UserDB.id == id).first()
 
-# Función para eliminar un usuario por su ID
-def deleteUser(id: uuid.UUID):
-    db = SessionLocal()
-    # Cambio aquí: users.id en lugar de users.c.id
-    user = db.query(users).filter(users.id == id).first()
-
-    if user:
-        db.delete(user)
-        db.commit()
-
-    db.close()
-
-    return user
+        if user:
+            db.delete(user)
+            db.commit()
+        db.close()
+        return user
+    except Exception as e:
+        raise e
+    finally:
+        db.close()
