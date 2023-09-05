@@ -1,4 +1,4 @@
-from schemas import User, UpdateUser
+from schemas import User, UpdateUser, CreateUser
 from models import UserDB
 from methods.cnx import SessionLocal
 
@@ -6,29 +6,30 @@ from methods.cnx import SessionLocal
 def getUsers():
     try:
         db = SessionLocal()
-        users_db = db.query(UserDB).filter(UserDB.deleted == False).all()
-        if users_db:
+        users = db.query(UserDB).filter(UserDB.deleted == False).all()
+        if users:
             db.close()
-            return users_db
+            return users
         return None
     except Exception as e:
         raise e
     finally:
         db.close()
+
 # Function to get one task
 def getUserDB(id: str):
     try:
         db = SessionLocal()
         user = db.query(UserDB).filter(UserDB.id == id).first()
-        db.close()
-
-        return user
+        if user:
+            db.close()
+            return user
+        return None
     except Exception as e:
         raise e                   
-
     
 # Creation of "user" is used in the "POST" method
-def createUserDB(user: User):
+def createUserDB(user: CreateUser):
     try:
         db = SessionLocal()
         new_user = UserDB(
@@ -37,7 +38,6 @@ def createUserDB(user: User):
                         lastName=user.lastName, 
                         email=user.email, 
                         password=user.password, 
-                        deleted=user.deleted
                        )
         db.add(new_user)
         db.commit()

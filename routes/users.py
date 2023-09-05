@@ -1,13 +1,11 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from fastapi.encoders import jsonable_encoder
-from schemas import User, UpdateUser
-from config import users
+from schemas import User, UpdateUser, CreateUser
 from methods.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB
 
 user = APIRouter()
 
-#Method for Users
+# Method for Users
 @user.get('', response_model=list[User], tags=['Users'])
 async def get_all_users():
     # Send all users
@@ -31,8 +29,8 @@ async def get_user(id: str):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting user {id}: {e}")
 
-@user.post('', response_model=User, tags=['Users'])
-async def create_user(user: User):
+@user.post('', response_model=CreateUser, tags=['Users'])
+async def create_user(user: CreateUser):
     try:
         new_user = createUserDB(user=user)
         return new_user
