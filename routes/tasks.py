@@ -2,8 +2,6 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 from schemas import Task, UpdateTask, CreateTask
 from methods.taskdb import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB
-from fastapi.encoders import jsonable_encoder
-from uuid  import uuid4
 
 task = APIRouter()
 

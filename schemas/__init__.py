@@ -30,7 +30,6 @@ class UpdateUser(BaseModel):
 
 # For Tasks
 class CreateTask(BaseModel):
-    id_user: str
     title: str
     summary: Text
 

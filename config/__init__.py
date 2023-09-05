@@ -1,21 +1,20 @@
-# In this place you can define your own configuration parameters.
-# For connect with Database.
+# I configure the database engine and the connection string
 
-users = []
-tasks = []
-
-# Configuro el motor de base de datos y la cadena de conxion
-# Con SQLite
+# With SQLite
 STRCNX='sqlite:///mydb.db'
+
 ## ---------------------------------------------------------------------------
-# Con MySQL, debemos tenes instalado pymysql
-# Basicos
+
+# With MySQL, we must have installed pymysql
+
+# Basic
 # HOST='SU_HOST' 
 # USER='SU_USER'
 # PWDS='SU_PASSWORD'
 # DBA='SU_BASE_DE_DATOS'
 # PORT='SU_PUERTO'
-# Ejemplo:
+
+# Example:
 # HOST='192.168.0.10' 
 # USER='root'
 # PWDS='Dany5170#'
