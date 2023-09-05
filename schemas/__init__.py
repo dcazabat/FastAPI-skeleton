@@ -21,7 +21,6 @@ class User(BaseModel):
     deleted: bool = False
 
 class UpdateUser(BaseModel):
-    name: str
     firstName: str
     lastName: str
     email: str
@@ -48,3 +47,7 @@ class UpdateTask(BaseModel):
     summary: Text
     dateEnd: datetime
     completed: bool
+
+class CompletedTask(BaseModel):
+    dateEnd: datetime = datetime.now()
+    completed: bool = True

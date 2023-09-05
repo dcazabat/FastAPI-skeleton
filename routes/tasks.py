@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from schemas import Task, UpdateTask, CreateTask
-from methods.taskdb import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB
+from schemas import Task, UpdateTask, CreateTask, CompletedTask
+from methods.taskdb import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB, completTaskDB
 
 task = APIRouter()
 
@@ -13,8 +13,7 @@ async def get_all_task(id_user: str):
         tasks = getTasks(id_user=id_user)
         if tasks:
             return tasks
-        # If not found, return 404
-        raise HTTPException(status_code=404, detail=f'Tasks: not found')
+        raise HTTPException(status_code=404, detail=f'Tasks: not found for User ({id_user})')
     except Exception as e:
         raise HTTPException(status_code=503,detail=f"Error getting tasks: {e}")
 
@@ -46,6 +45,16 @@ async def update_task(id_user: str, id: str, task: UpdateTask):
         raise HTTPException(status_code=404, detail=f'Task: {id} not found')
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Update Failed for Task ID: {id}, Error {e}")
+
+@task.patch('/{id_user}/{id}',response_model=CompletedTask , tags=['Tasks'])
+async def completed_task(id_user: str, id: str, task: CompletedTask):
+    try:
+        completedTask = completTaskDB(id_user=id_user, id=id, task=task)
+        if completedTask:
+            return completedTask
+        raise HTTPException(status_code=404, detail=f'Task: {id} not found')
+    except Exception as e:
+        raise HTTPException(status_code=501, detail=f"Completed Failed for Task ID: {id}, Error {e}")
 
 @task.delete('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
 async def delete_task(id_user: str, id: str):

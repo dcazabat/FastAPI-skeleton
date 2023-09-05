@@ -30,9 +30,9 @@ class TaskDB(Base):
     title = Column(String(100), nullable=False)
     summary = Column(Text, nullable=False)
     dateIni = Column(DateTime, nullable=False, default= datetime.now())
-    dateEnd = datetime
-    completed = bool = False
-    deleted = bool = False
+    dateEnd = Column(DateTime)
+    completed = Column(Boolean, default=False)
+    deleted = Column(Boolean, default=False)
     id_user = Column(String(50), ForeignKey("users.id"), nullable=False)
 
     def __repr__(self) -> str:

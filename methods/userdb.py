@@ -56,7 +56,6 @@ def updateUserDB(id: str, updated_user: UpdateUser):
         user = db.query(UserDB).filter(UserDB.id == id).first()
         print(user)
         if user:
-            user.name=updated_user.name
             user.firstName=updated_user.firstName
             user.lastName=updated_user.lastName
             user.email=updated_user.email

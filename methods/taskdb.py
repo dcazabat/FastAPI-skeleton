@@ -1,4 +1,4 @@
-from schemas import Task, UpdateTask, CreateTask
+from schemas import Task, UpdateTask, CreateTask, CompletedTask
 from models import TaskDB
 from methods.cnx import SessionLocal
 
@@ -58,6 +58,25 @@ def updateTaskDB(id_user:str,  id: str, updated_task: UpdateTask):
         if task:
             task.title=updated_task.title
             task.summary=updated_task.summary
+            task.dateEnd=updated_task.dateEnd
+            task.completed=updated_task.completed
+            db.refresh(task)
+            db.commit()
+            db.close()
+            return task
+        return None
+    except Exception as e:
+        db.rollback()
+        raise e
+    finally:
+        db.close()
+
+def completTaskDB(id_user:str,  id: str, updated_task: CompletedTask):
+    try:
+        db = SessionLocal()
+        task = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.id == id).first()
+
+        if task:
             task.dateEnd=updated_task.dateEnd
             task.completed=updated_task.completed
             db.refresh(task)
