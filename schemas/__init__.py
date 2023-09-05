@@ -1,12 +1,11 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Text
-from uuid import uuid4
+import uuid
 
 # For Users
-
 class User(BaseModel):
-    id: str
+    id: str = str(uuid.uuid4())
     name: str
     firstName: str
     lastName: str
@@ -14,8 +13,17 @@ class User(BaseModel):
     password: str
     deleted: bool = False
 
+class UpdateUser(BaseModel):
+    name: str
+    firstName: str
+    lastName: str
+    email: str
+    password: str
+
+
+# For Tasks
 class Task(BaseModel):
-    id: str = str(uuid4)
+    id: str = str(uuid.uuid4())
     id_user: str
     title: str
     summary: Text

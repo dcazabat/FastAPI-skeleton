@@ -31,7 +31,6 @@ app.include_router(task, prefix='/tasks')
 
 # General Methods
 
-
 @app.get('/', tags=['Home App'])
 @app.get('/home', tags=['Home App'])
 def root():

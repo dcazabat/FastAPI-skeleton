@@ -1,12 +1,12 @@
-from schemas import User
+from schemas import User, UpdateUser
 from models import UserDB
-from cnx import SessionLocal
+from methods.cnx import SessionLocal
 
 # Function to get all Users 
 def getUsers():
     try:
         db = SessionLocal()
-        users_db = db.query(UserDB).all()
+        users_db = db.query(UserDB).filter(UserDB.deleted == False).all()
         if users_db:
             db.close()
             return users_db
@@ -16,7 +16,7 @@ def getUsers():
     finally:
         db.close()
 # Function to get one task
-def get_userId(id: str):
+def getUserDB(id: str):
     try:
         db = SessionLocal()
         user = db.query(UserDB).filter(UserDB.id == id).first()
@@ -24,21 +24,24 @@ def get_userId(id: str):
 
         return user
     except Exception as e:
-        raise e
+        raise e                   
+
     
 # Creation of "user" is used in the "POST" method
-def create_user(user: UserDB):
+def createUserDB(user: User):
     try:
         db = SessionLocal()
-        new_user = User(
-                    name=user.name,
-                    firstName=user.firstName,
-                    lastName=user.lastName,
-                    email=user.email,
-                    password=user.password,
-                    deleted=user.deleted)
+        new_user = UserDB(
+                        name=user.name,
+                        firstName=user.firstName, 
+                        lastName=user.lastName, 
+                        email=user.email, 
+                        password=user.password, 
+                        deleted=user.deleted
+                       )
         db.add(new_user)
         db.commit()
+        db.refresh(new_user)
         return new_user
     except Exception as e:
         db.rollback()
@@ -47,15 +50,19 @@ def create_user(user: UserDB):
         db.close_all()
 
 # Function to get update the "User" is used in "PUT" methods
-def update_user(id: str, updated_user: User):
+def updateUserDB(id: str, updated_user: UpdateUser):
     try:
         db = SessionLocal()
         user = db.query(UserDB).filter(UserDB.id == id).first()
+        print(user)
         if user:
-            user.nombre = updated_user.nombre
-            user.edad = updated_user.edad
-            user.correo = updated_user.correo
+            user.name=updated_user.name
+            user.firstName=updated_user.firstName
+            user.lastName=updated_user.lastName
+            user.email=updated_user.email
+            user.password=updated_user.password
             db.commit()
+            db.refresh(user)
             return user
         return None
     except Exception as e:
@@ -64,15 +71,15 @@ def update_user(id: str, updated_user: User):
     finally:
         db.close()
 
-# Function to remove a "User" by their ID
-def deleteUser(id: str):
+# Function to remove a "User" by their ID, mode logical
+def deleteUserDB(id: str):
     try:
         db = SessionLocal()
         user = db.query(UserDB).filter(UserDB.id == id).first()
-
         if user:
-            db.delete(user)
+            user.deleted = True
             db.commit()
+            db.refresh(user)
         db.close()
         return user
     except Exception as e:
