@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.users import user
 from routes.tasks import task
-from sqlalchemy_utils import database_exists, create_database
+# from sqlalchemy_utils import database_exists, create_database
 
 app = FastAPI(
     openapi_tags=[{

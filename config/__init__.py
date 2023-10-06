@@ -1,7 +1,7 @@
 # I configure the database engine and the connection string
 
 # With SQLite
-STRCNX='sqlite:///mydb.db'
+# STRCNX='sqlite:///mydb.db'
 
 ## ---------------------------------------------------------------------------
 
@@ -15,10 +15,10 @@ STRCNX='sqlite:///mydb.db'
 # PORT='SU_PUERTO'
 
 # Example:
-# HOST='192.168.0.10' 
-# USER='root'
-# PWDS='Dany5170#'
-# DBA='sampledbpy'
-# PORT='3306'
-# STRCNX=f'mysql+pymysql://{USER}:{PWDS}@{HOST}:{PORT}/{DBA}'
+HOST='segundosoftware' 
+USER='id21359554_root'
+PWDS='Root1234#'
+DBA='id21359554_pepito'
+PORT='3306'
+STRCNX=f'mysql+pymysql://{USER}:{PWDS}@{HOST}:{PORT}/{DBA}'
 SQLALCHEMY_DATABASE_URI=STRCNX
