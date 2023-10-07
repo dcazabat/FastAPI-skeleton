@@ -1,12 +1,18 @@
 from pydantic import BaseModel
 from datetime import datetime
 from typing import Text
-from uuid import uuid4
+import uuid
 
 # For Users
+class CreateUser(BaseModel):
+    name: str
+    firstName: str
+    lastName: str
+    email: str
+    password: str
 
 class User(BaseModel):
-    id: str
+    id: str = str(uuid.uuid4())
     name: str
     firstName: str
     lastName: str
@@ -14,8 +20,20 @@ class User(BaseModel):
     password: str
     deleted: bool = False
 
+class UpdateUser(BaseModel):
+    firstName: str
+    lastName: str
+    email: str
+    password: str
+
+
+# For Tasks
+class CreateTask(BaseModel):
+    title: str
+    summary: Text
+
 class Task(BaseModel):
-    id: str = str(uuid4)
+    id: str = str(uuid.uuid4())
     id_user: str
     title: str
     summary: Text
@@ -23,3 +41,13 @@ class Task(BaseModel):
     dateEnd: datetime
     completed: bool = False
     deleted: bool = False
+
+class UpdateTask(BaseModel):
+    title: str
+    summary: Text
+    dateEnd: datetime
+    completed: bool
+
+class CompletedTask(BaseModel):
+    dateEnd: datetime = datetime.now()
+    completed: bool = True
