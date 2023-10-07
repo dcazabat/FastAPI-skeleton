@@ -11,6 +11,8 @@ async def get_all_users():
     # Send all users
     try:
         users = getUsers()
+        if users == None:
+            raise HTTPException(status_code=204, detail=f'Users Empty')    
         if users:
             return users
         # If not found, return 404

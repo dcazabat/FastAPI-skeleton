@@ -1,5 +1,9 @@
-# I configure the database engine and the connection string
+import os
+from dotenv import load_dotenv
 
+load_dotenv()
+
+# The .env file must be created with the .env.example format
 # With SQLite
 # STRCNX='sqlite:///mydb.db'
 
@@ -15,10 +19,11 @@
 # PORT='SU_PUERTO'
 
 # Example:
-HOST='segundosoftware' 
-USER='id21359554_root'
-PWDS='Root1234#'
-DBA='id21359554_pepito'
-PORT='3306'
-STRCNX=f'mysql+pymysql://{USER}:{PWDS}@{HOST}:{PORT}/{DBA}'
+HOST=os.getenv('HOST')
+USERDB=os.getenv('USERDB')
+PWDS=os.getenv('PWDS')
+DBA=os.getenv('DBA')
+PORT=os.getenv('PORT')
+STRCNX=f'mysql+pymysql://{USERDB}:{PWDS}@{HOST}:{PORT}/{DBA}'
+print(STRCNX)
 SQLALCHEMY_DATABASE_URI=STRCNX

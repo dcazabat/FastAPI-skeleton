@@ -8,7 +8,6 @@ def getUsers():
         db = SessionLocal()
         users = db.query(UserDB).filter(UserDB.deleted == False).all()
         if users:
-            db.close()
             return users
         return None
     except Exception as e:
