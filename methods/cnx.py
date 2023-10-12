@@ -4,18 +4,21 @@ from sqlalchemy_utils import create_database, database_exists, get_tables
 from config import STRCNX
 from models import Base
 
-# Function Test Table Exist
+# Table Existence Check Function
 def checkTable(engine, tableName):
     inspector = inspect(engine).get_table_names()
     return not tableName in inspector
 
-# Crear el motor de base de datos
+# Create the database engine
 engine = create_engine(STRCNX)
 
-# Pimer inicio de la Aplicacion debo saber si la base de datos esta creada o no
+# First start of the Application I must know if the database is created or not and if any table is missing
 if not database_exists(engine.url):
     create_database(engine.url)
-else:
-    if checkTable(engine=engine, tableName='users') and checkTable(engine=engine, tableName='tasks'):
-        Base.metadata.create_all(bind=engine)
+Base.metadata.create_all(bind=engine)
+# else:
+#     print(checkTable(engine=engine, tableName='tasks'))
+#     print(checkTable(engine=engine, tableName='users'))
+#     if checkTable(engine=engine, tableName='users') or checkTable(engine=engine, tableName='tasks'):
+#         Base.metadata.create_all(bind=engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

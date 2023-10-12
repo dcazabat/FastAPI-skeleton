@@ -27,7 +27,7 @@ class UserDB(Base):
 class TaskDB(Base):
     __tablename__ = "tasks"
     id = Column(String(50), primary_key=True, default=str(uuid.uuid4()))
-    title = Column(String(100), nullable=False)
+    title = Column(String(80), nullable=False)
     summary = Column(Text, nullable=False)
     dateIni = Column(DateTime, nullable=False, default= datetime.now())
     dateEnd = Column(DateTime)
@@ -37,3 +37,7 @@ class TaskDB(Base):
 
     def __repr__(self) -> str:
         return f"Task(id={self.id!r}, id_user={self.id_user!r}, title={self.title!r}, summary={self.summary!r}, completed={self.completed!r})"
+
+class Test(Base):
+    __tablename__ = "jorge"
+    id = Column(String(20), primary_key=True)

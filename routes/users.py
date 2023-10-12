@@ -9,16 +9,15 @@ user = APIRouter()
 @user.get('', response_model=list[User], tags=['Users'])
 async def get_all_users():
     # Send all users
-    try:
+    # try:
         users = getUsers()
-        if users == None:
-            raise HTTPException(status_code=204, detail=f'Users Empty')    
         if users:
             return users
-        # If not found, return 404
-        raise HTTPException(status_code=404, detail=f'Users: not found')
-    except Exception as e:
-        raise HTTPException(status_code=503,detail=f"Error getting users: {e}")
+        print('Routes')
+        raise HTTPException(status_code=204, detail=f'Users Empty')    
+    # except Exception as e:
+    #     return e
+        # raise HTTPException(status_code=500,detail=f"Error getting users: {e}")
     
 @user.get('/{id}', response_model=User, tags=['Users'])
 async def get_user(id: str):
@@ -35,6 +34,7 @@ async def get_user(id: str):
 async def create_user(user: CreateUser):
     try:
         new_user = createUserDB(user=user)
+        print(new_user)
         return new_user
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Internal Server Error: User creation failed: {e}")

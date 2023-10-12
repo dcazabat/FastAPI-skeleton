@@ -7,23 +7,21 @@ def getUsers():
     try:
         db = SessionLocal()
         users = db.query(UserDB).filter(UserDB.deleted == False).all()
-        if users:
-            return users
-        return None
+        print('Methods')
+        return users
     except Exception as e:
         raise e
     finally:
         db.close()
+        print('MethodsF')
 
 # Function to get one task
 def getUserDB(id: str):
     try:
         db = SessionLocal()
         user = db.query(UserDB).filter(UserDB.id == id).first()
-        if user:
-            db.close()
-            return user
-        return None
+        db.close()
+        return user
     except Exception as e:
         raise e                   
     
@@ -53,16 +51,13 @@ def updateUserDB(id: str, updated_user: UpdateUser):
     try:
         db = SessionLocal()
         user = db.query(UserDB).filter(UserDB.id == id).first()
-        print(user)
-        if user:
-            user.firstName=updated_user.firstName
-            user.lastName=updated_user.lastName
-            user.email=updated_user.email
-            user.password=updated_user.password
-            db.commit()
-            db.refresh(user)
-            return user
-        return None
+        user.firstName=updated_user.firstName
+        user.lastName=updated_user.lastName
+        user.email=updated_user.email
+        user.password=updated_user.password
+        db.commit()
+        db.refresh(user)
+        return user
     except Exception as e:
         db.rollback()
         raise e
@@ -74,10 +69,9 @@ def deleteUserDB(id: str):
     try:
         db = SessionLocal()
         user = db.query(UserDB).filter(UserDB.id == id).first()
-        if user:
-            user.deleted = True
-            db.commit()
-            db.refresh(user)
+        user.deleted = True
+        db.commit()
+        db.refresh(user)
         db.close()
         return user
     except Exception as e:
