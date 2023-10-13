@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from schemas import User, UpdateUser, CreateUser
+from schemas import User, UpdateUser, CreateUserOut, CreateUserIn
 from methods.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB
 
 user = APIRouter()
@@ -29,8 +29,8 @@ async def get_user(id: str):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting user {id}: {e}")
 
-@user.post('', response_model=CreateUser, tags=['Users'])
-async def create_user(user: CreateUser):
+@user.post('', response_model=CreateUserOut, tags=['Users'])
+async def create_user(user: CreateUserIn):
     try:
         new_user = createUserDB(user=user)
         return new_user

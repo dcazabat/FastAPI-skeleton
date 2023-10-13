@@ -1,6 +1,7 @@
-from schemas import User, UpdateUser, CreateUser
+from schemas import User, UpdateUser, CreateUserIn
 from models import UserDB
 from methods.cnx import SessionLocal
+import uuid
 
 # Function to get all Users 
 def getUsers():
@@ -29,10 +30,11 @@ def getUserDB(id: str):
         raise e                   
     
 # Creation of "user" is used in the "POST" method
-def createUserDB(user: CreateUser):
+def createUserDB(user: CreateUserIn):
     try:
         db = SessionLocal()
         new_user = UserDB(
+                        id=str(uuid.uuid4()),
                         name=user.name,
                         firstName=user.firstName, 
                         lastName=user.lastName, 

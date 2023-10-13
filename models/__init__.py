@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
 
 class UserDB(Base):
     __tablename__ = "users"
-    id = Column(String(50), primary_key=True, default=str(uuid.uuid4()))
+    id = Column(String(50), primary_key=True, default="")
     name = Column(String(100), nullable=False)
     firstName = Column(String(100))
     lastName = Column(String(100))
@@ -26,7 +26,7 @@ class UserDB(Base):
 
 class TaskDB(Base):
     __tablename__ = "tasks"
-    id = Column(String(50), primary_key=True, default=str(uuid.uuid4()))
+    id = Column(String(50), primary_key=True, default="")
     title = Column(String(100), nullable=False)
     summary = Column(Text, nullable=False)
     dateIni = Column(DateTime, nullable=False, default= datetime.now())

@@ -1,6 +1,6 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from schemas import Task, UpdateTask, CreateTask, CompletedTask
+from schemas import Task, UpdateTask, CreateTaskIn, CreateTaskOut, CompletedTask
 from methods.taskdb import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB, completTaskDB
 
 task = APIRouter()
@@ -28,8 +28,8 @@ async def get_task(id_user: str, id: str):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting task {id}: {e}")
 
-@task.post('/{id_user}',response_model=CreateTask , tags=['Tasks'])
-async def create_task(id_user: str, task: CreateTask):
+@task.post('/{id_user}',response_model=CreateTaskOut , tags=['Tasks'])
+async def create_task(id_user: str, task: CreateTaskIn):
     try:
         new_task = createTaskDB(id_user=id_user, task=task)
         return new_task

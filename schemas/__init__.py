@@ -4,12 +4,21 @@ from typing import Text
 import uuid
 
 # For Users
-class CreateUser(BaseModel):
+class CreateUserOut(BaseModel):
+    id: str
     name: str
     firstName: str
     lastName: str
     email: str
     password: str
+
+class CreateUserIn(BaseModel):
+    name: str
+    firstName: str
+    lastName: str
+    email: str
+    password: str
+
 
 class User(BaseModel):
     id: str = str(uuid.uuid4())
@@ -28,7 +37,13 @@ class UpdateUser(BaseModel):
 
 
 # For Tasks
-class CreateTask(BaseModel):
+class CreateTaskIn(BaseModel):
+    title: str
+    summary: Text
+
+class CreateTaskOut(BaseModel):
+    id: str = str(uuid.uuid4())
+    id_user: str = str(uuid.uuid4())
     title: str
     summary: Text
 
