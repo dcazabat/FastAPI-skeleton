@@ -2,7 +2,6 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from routes.users import user
 from routes.tasks import task
-from sqlalchemy_utils import database_exists, create_database
 
 app = FastAPI(
     openapi_tags=[{
@@ -26,8 +25,8 @@ app.add_middleware(
 )
 
 # Routes
-app.include_router(user, prefix='/users')
-app.include_router(task, prefix='/tasks')
+app.include_router(user, prefix='/users', tags=['Users'])
+app.include_router(task, prefix='/tasks', tags=['Tasks'])
 
 # General Methods
 

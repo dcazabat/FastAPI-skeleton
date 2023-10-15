@@ -1,4 +1,4 @@
-from schemas import User, UpdateUser, CreateUserIn
+from schemas.users import User, UpdateUser, CreateUserIn
 from models import UserDB
 from methods.cnx import SessionLocal
 import uuid

@@ -3,40 +3,6 @@ from datetime import datetime
 from typing import Text
 import uuid
 
-# For Users
-class CreateUserOut(BaseModel):
-    id: str
-    name: str
-    firstName: str
-    lastName: str
-    email: str
-    password: str
-
-class CreateUserIn(BaseModel):
-    name: str
-    firstName: str
-    lastName: str
-    email: str
-    password: str
-
-
-class User(BaseModel):
-    id: str = str(uuid.uuid4())
-    name: str
-    firstName: str
-    lastName: str
-    email: str
-    password: str
-    deleted: bool = False
-
-class UpdateUser(BaseModel):
-    firstName: str
-    lastName: str
-    email: str
-    password: str
-
-
-# For Tasks
 class CreateTaskIn(BaseModel):
     title: str
     summary: Text
@@ -53,7 +19,7 @@ class Task(BaseModel):
     title: str
     summary: Text
     dateIni: datetime = datetime.now()
-    dateEnd: datetime
+    dateEnd: datetime = datetime(1900, 1, 1, 0, 0, 0)
     completed: bool = False
     deleted: bool = False
 

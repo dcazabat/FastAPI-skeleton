@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from schemas import User, UpdateUser, CreateUserOut, CreateUserIn
+from schemas.users import User, UpdateUser, CreateUserOut, CreateUserIn
 from methods.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB
 
 user = APIRouter()
 
 # Method for Users
-@user.get('', response_model=list[User], tags=['Users'])
+@user.get('', response_model=list[User])
 async def get_all_users():
     # Send all users
     try:
@@ -18,7 +18,7 @@ async def get_all_users():
     except Exception as e:
         raise HTTPException(status_code=503,detail=f"Error getting users: {e}")
     
-@user.get('/{id}', response_model=User, tags=['Users'])
+@user.get('/{id}', response_model=User)
 async def get_user(id: str):
     # Check if users exists
     try:
@@ -29,7 +29,7 @@ async def get_user(id: str):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting user {id}: {e}")
 
-@user.post('', response_model=CreateUserOut, tags=['Users'])
+@user.post('', response_model=CreateUserOut)
 async def create_user(user: CreateUserIn):
     try:
         new_user = createUserDB(user=user)
@@ -37,7 +37,7 @@ async def create_user(user: CreateUserIn):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Internal Server Error: User creation failed: {e}")
 
-@user.put('/{id}', response_model=UpdateUser, tags=['Users'])
+@user.put('/{id}', response_model=UpdateUser)
 async def update_user(id: str, user: UpdateUser):
     try:
         updatedUser = updateUserDB(id=id, updated_user=user)
@@ -47,7 +47,7 @@ async def update_user(id: str, user: UpdateUser):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Update Failed for User ID: {id}, Error {e}")
 
-@user.delete('/{id}', response_model=User, tags=['Users'])
+@user.delete('/{id}', response_model=User)
 async def delete_user(id: str):
     try:
         deleteUser = deleteUserDB(id=id)

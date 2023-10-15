@@ -1,12 +1,12 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from schemas import Task, UpdateTask, CreateTaskIn, CreateTaskOut, CompletedTask
+from schemas.tasks import Task, UpdateTask, CreateTaskIn, CreateTaskOut, CompletedTask
 from methods.taskdb import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB, completTaskDB
 
 task = APIRouter()
 
 # Method for Task
-@task.get('/{id_user}', response_model=list[Task], tags=['Tasks'])
+@task.get('/{id_user}', response_model=list[Task])
 async def get_all_task(id_user: str):
     # Send all users
     try:
@@ -17,7 +17,7 @@ async def get_all_task(id_user: str):
     except Exception as e:
         raise HTTPException(status_code=503,detail=f"Error getting tasks: {e}")
 
-@task.get('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
+@task.get('/{id_user}/{id}',response_model=Task)
 async def get_task(id_user: str, id: str):
     # Check if task exists
     try:
@@ -28,7 +28,7 @@ async def get_task(id_user: str, id: str):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting task {id}: {e}")
 
-@task.post('/{id_user}',response_model=CreateTaskOut , tags=['Tasks'])
+@task.post('/{id_user}',response_model=CreateTaskOut)
 async def create_task(id_user: str, task: CreateTaskIn):
     try:
         new_task = createTaskDB(id_user=id_user, task=task)
@@ -36,7 +36,7 @@ async def create_task(id_user: str, task: CreateTaskIn):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Internal Server Error: Task creation failed: {e}")
 
-@task.put('/{id_user}/{id}',response_model=UpdateTask , tags=['Tasks'])
+@task.put('/{id_user}/{id}',response_model=UpdateTask)
 async def update_task(id_user: str, id: str, task: UpdateTask):
     try:
         updatedTask = updateTaskDB(id_user=id_user, id=id, task=task)
@@ -46,7 +46,7 @@ async def update_task(id_user: str, id: str, task: UpdateTask):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Update Failed for Task ID: {id}, Error {e}")
 
-@task.patch('/{id_user}/{id}',response_model=CompletedTask , tags=['Tasks'])
+@task.patch('/{id_user}/{id}',response_model=CompletedTask)
 async def completed_task(id_user: str, id: str, task: CompletedTask):
     try:
         completedTask = completTaskDB(id_user=id_user, id=id, task=task)
@@ -56,7 +56,7 @@ async def completed_task(id_user: str, id: str, task: CompletedTask):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Completed Failed for Task ID: {id}, Error {e}")
 
-@task.delete('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
+@task.delete('/{id_user}/{id}',response_model=Task)
 async def delete_task(id_user: str, id: str):
     try:
         deletedTask = deleteTaskDB(id_user=id_user, id=id)
