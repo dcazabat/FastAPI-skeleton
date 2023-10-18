@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from routes.routeapp import default
 from routes.users import user
 from routes.tasks import task
 
@@ -25,20 +26,9 @@ app.add_middleware(
 )
 
 # Routes
+app.include_router(default, prefix='', tags=['App Default'])
 app.include_router(user, prefix='/users', tags=['Users'])
 app.include_router(task, prefix='/tasks', tags=['Tasks'])
 
 # General Methods
 
-@app.get('/', tags=['Home App'])
-@app.get('/home', tags=['Home App'])
-def root():
-    # Validate if the users and passwords are correct
-    return {'message': 'Hello World'}
-
-
-@app.get('/test', tags=['Home App'])
-def test():
-    resp = {'firtname': 'Jhon', 'lastname': 'Wick',
-            'isdanger': 'Very High', 'age': 53}
-    return resp

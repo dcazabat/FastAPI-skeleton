@@ -1,6 +1,6 @@
 from schemas.tasks import Task, UpdateTask, CreateTaskIn, CompletedTask
 from models import TaskDB
-from methods.cnx import SessionLocal
+from services.cnx import SessionLocal
 import uuid
 from datetime import datetime
 
@@ -9,7 +9,7 @@ def getTasks(id_user: str):
     try:
         db = SessionLocal()
         tasks = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.deleted == False).all()
-        print(tasks)
+        # print(tasks)
         if tasks:
             db.close()
             return tasks

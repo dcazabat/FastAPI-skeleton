@@ -1,6 +1,6 @@
 from schemas.users import User, UpdateUser, CreateUserIn
 from models import UserDB
-from methods.cnx import SessionLocal
+from services.cnx import SessionLocal
 import uuid
 
 # Function to get all Users 

@@ -18,6 +18,12 @@ class CreateUserIn(BaseModel):
     email: str
     password: str
 
+class GetUser(BaseModel):
+    id: str = str(uuid.uuid4())
+    name: str
+    firstName: str
+    lastName: str
+    email: str
 
 class User(BaseModel):
     id: str = str(uuid.uuid4())

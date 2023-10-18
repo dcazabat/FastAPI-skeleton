@@ -1,12 +1,14 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from schemas.users import User, UpdateUser, CreateUserOut, CreateUserIn
-from methods.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB
+from fastapi.responses import JSONResponse
+from fastapi.encoders import jsonable_encoder
+from schemas.users import User, UpdateUser, CreateUserOut, CreateUserIn, GetUser
+from services.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB
 
 user = APIRouter()
 
 # Method for Users
-@user.get('', response_model=list[User])
+@user.get('', response_model=list[GetUser])
 async def get_all_users():
     # Send all users
     try:
@@ -14,26 +16,30 @@ async def get_all_users():
         if users:
             return users
         # If not found, return 404
-        raise HTTPException(status_code=404, detail=f'Users: not found')
+        return JSONResponse(status_code=404, content=f'Users: not found')
+        # raise HTTPException(status_code=404, detail=f'Users: not found')
     except Exception as e:
         raise HTTPException(status_code=503,detail=f"Error getting users: {e}")
     
-@user.get('/{id}', response_model=User)
+@user.get('/{id}', response_model=GetUser)
 async def get_user(id: str):
     # Check if users exists
     try:
         user = getUserDB(id=id)
         if user:
             return user
-        raise HTTPException(status_code=404, detail=f'User: {id} not found')
+        return JSONResponse(status_code=404, content={'message' : f'User: {id} not found'})
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting user {id}: {e}")
 
 @user.post('', response_model=CreateUserOut)
 async def create_user(user: CreateUserIn):
     try:
-        new_user = createUserDB(user=user)
-        return new_user
+        newUser = createUserDB(user=user)
+        if newUser:
+            newUserDict = jsonable_encoder(CreateUserOut(**jsonable_encoder(newUser)))
+            return JSONResponse(status_code=200, content={'message': 'User Create OK', 'data': newUserDict})
+        return JSONResponse(status_code=404, content={'message': 'User NOT Create'})
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Internal Server Error: User creation failed: {e}")
 
@@ -42,8 +48,9 @@ async def update_user(id: str, user: UpdateUser):
     try:
         updatedUser = updateUserDB(id=id, updated_user=user)
         if updatedUser:
-            return updatedUser
-        raise HTTPException(status_code=404, detail=f'User: {id} not found')
+            updatedUserDict = jsonable_encoder(updatedUser)
+            return JSONResponse(status_code=200, content={'message': 'User Update OK', 'data': updatedUserDict})
+        return JSONResponse(status_code=404, content={'message': 'User NOT Update'})
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Update Failed for User ID: {id}, Error {e}")
 
