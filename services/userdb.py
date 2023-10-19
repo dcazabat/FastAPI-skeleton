@@ -1,7 +1,8 @@
-from schemas.users import User, UpdateUser, CreateUserIn
+from schemas.users import User, UpdateUser, CreateUserIn, LoginUser
 from models import UserDB
 from services.cnx import SessionLocal
 import uuid
+from middlewares.auth import hash_password
 
 # Function to get all Users 
 def getUsers():
@@ -39,7 +40,7 @@ def createUserDB(user: CreateUserIn):
                         firstName=user.firstName, 
                         lastName=user.lastName, 
                         email=user.email, 
-                        password=user.password, 
+                        password=hash_password(user.password), 
                        )
         db.add(new_user)
         db.commit()
@@ -83,6 +84,19 @@ def deleteUserDB(id: str):
             db.refresh(user)
         db.close()
         return user
+    except Exception as e:
+        raise e
+    finally:
+        db.close()
+
+def loginUser(user: LoginUser):
+    try:
+        db = SessionLocal()
+        user = db.query(UserDB).filter(UserDB.deleted == False, UserDB.name == user.name, UserDB.password == hash_password(user.password)).first()
+        if user:
+            db.close()
+            return user
+        return None
     except Exception as e:
         raise e
     finally:

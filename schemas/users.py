@@ -3,6 +3,10 @@ from datetime import datetime
 from typing import Text
 import uuid
 
+class LoginUser(BaseModel):
+    name: str
+    password: str
+
 class CreateUserOut(BaseModel):
     id: str
     name: str

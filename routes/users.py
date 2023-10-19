@@ -2,8 +2,8 @@ from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
-from schemas.users import User, UpdateUser, CreateUserOut, CreateUserIn, GetUser
-from services.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB
+from schemas.users import User, UpdateUser, CreateUserOut, CreateUserIn, GetUser, LoginUser
+from services.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB, loginUser
 
 user = APIRouter()
 
@@ -63,3 +63,13 @@ async def delete_user(id: str):
         raise HTTPException(status_code=404, detail=f'User: {id} not found')
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Delete Failed for User ID: {id}, Error {e}")
+
+@user.post('/login',response_model=bool)
+async def login_user(user: LoginUser):
+    try:
+        userOK = loginUser(user=user)
+        if userOK:
+            return JSONResponse(status_code=200, content={'message': 'User Authenticate'})
+        return JSONResponse(status_code=404, content={'message': 'User Not Authenticate'})
+    except Exception as e:
+        raise HTTPException(status_code=501, detail=f"Server Error for User: {user.name}, Error {e}")
