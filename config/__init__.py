@@ -9,23 +9,12 @@ load_dotenv()
 # With SQLite
 # STRCNX='sqlite:///mydb.db'
 
-
-## ---------------------------------------------------------------------------
-
-# With MySQL, we must have installed pymysql
-
-# Basic
-# HOST='SU_HOST' 
-# USERDB='SU_USER'
-# PWDS='SU_PASSWORD'
-# DBA='SU_BASE_DE_DATOS'
-# PORT='SU_PUERTO'
-
+ENGINE=os.getenv('ENGINE')
 HOST= os.getenv('HOST')
 USERDB= os.getenv('USERDB')
 PWDS= os.getenv('PWDS')
 DBA= os.getenv('DBA')
 PORT= os.getenv('PORT')
 
-STRCNX=f'mysql+pymysql://{USERDB}:{PWDS}@{HOST}:{PORT}/{DBA}'
+STRCNX=f'{ENGINE}://{USERDB}:{PWDS}@{HOST}:{PORT}/{DBA}'
 SQLALCHEMY_DATABASE_URI=STRCNX
