@@ -4,11 +4,13 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders import jsonable_encoder
 from schemas.users import User, UpdateUser, CreateUserOut, CreateUserIn, GetUser, LoginUser
 from services.userdb import createUserDB, getUserDB, getUsers, updateUserDB, deleteUserDB, loginUser
+from middlewares.auth import create_access_token
+from typing import List
 
 user = APIRouter()
 
 # Method for Users
-@user.get('', response_model=list[GetUser])
+@user.get('', response_model=List[GetUser], status_code=200)
 async def get_all_users():
     # Send all users
     try:
@@ -21,7 +23,7 @@ async def get_all_users():
     except Exception as e:
         raise HTTPException(status_code=503,detail=f"Error getting users: {e}")
     
-@user.get('/{id}', response_model=GetUser)
+@user.get('/{id}', response_model=GetUser, status_code=200)
 async def get_user(id: str):
     # Check if users exists
     try:
@@ -32,7 +34,7 @@ async def get_user(id: str):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting user {id}: {e}")
 
-@user.post('', response_model=CreateUserOut)
+@user.post('', response_model=CreateUserOut, status_code=200)
 async def create_user(user: CreateUserIn):
     try:
         newUser = createUserDB(user=user)
@@ -43,7 +45,7 @@ async def create_user(user: CreateUserIn):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Internal Server Error: User creation failed: {e}")
 
-@user.put('/{id}', response_model=UpdateUser)
+@user.put('/{id}', response_model=UpdateUser, status_code=200)
 async def update_user(id: str, user: UpdateUser):
     try:
         updatedUser = updateUserDB(id=id, updated_user=user)
@@ -54,7 +56,7 @@ async def update_user(id: str, user: UpdateUser):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Update Failed for User ID: {id}, Error {e}")
 
-@user.delete('/{id}', response_model=User)
+@user.delete('/{id}', response_model=User, status_code=200)
 async def delete_user(id: str):
     try:
         deleteUser = deleteUserDB(id=id)
@@ -64,12 +66,16 @@ async def delete_user(id: str):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Delete Failed for User ID: {id}, Error {e}")
 
-@user.post('/login',response_model=bool)
+@user.post('/login',response_model=dict, status_code=200)
 async def login_user(user: LoginUser):
+    # Falta devolver el token
     try:
         userOK = loginUser(user=user)
         if userOK:
-            return JSONResponse(status_code=200, content={'message': 'User Authenticate'})
+            data = { 'username': userOK.name,
+                     'id': userOK.id}
+            token = create_access_token(data=data)
+            return JSONResponse(status_code=200, content={'token': token})
         return JSONResponse(status_code=404, content={'message': 'User Not Authenticate'})
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Server Error for User: {user.name}, Error {e}")

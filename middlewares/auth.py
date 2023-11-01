@@ -1,25 +1,15 @@
 import bcrypt
 import os
+from datetime import datetime, timedelta
+from typing import Optional
+from fastapi import HTTPException, Depends
+from fastapi.security import OAuth2PasswordBearer
+import jwt
+
 from dotenv import load_dotenv
 
+
 load_dotenv()
-# from middlewares import salt
-# Luego, al inicio de la aplicación, lee la sal desde el archivo
-
-# stored_salt = salt.salt
-
-# def hash_password(password: str) -> str:
-#     hashed_password = bcrypt.hashpw(password.encode('utf-8'), stored_salt)
-#     return hashed_password.decode('utf-8')
-
-
-
-#Genera una nueva sal
-# new_salt = bcrypt.gensalt()
-
-# # Guarda la sal en un archivo
-# with open('salt.txt', 'wb') as file:
-#     file.write(new_salt)
 
 def hash_password(password: str) -> str:
     ''' Returns an encrypted string '''
@@ -28,3 +18,28 @@ def hash_password(password: str) -> str:
     # Utiliza la sal almacenada
     hashed_password = bcrypt.hashpw(password_bytes, os.getenv('SECRET_KEY'))
     return hashed_password.decode('utf-8')
+
+def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=float(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')))
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, os.getenv('SECRET_KEY'), algorithm=os.getenv('ALGORITHM'))
+    return encoded_jwt
+
+
+### REVISAR 
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
+
+# Middleware para verificar el token JWT
+async def verify_token(token: str = Depends(oauth2_scheme)):
+    try:
+        payload = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=[os.getenv('ALGORITHM')])
+        # Aquí podrías realizar validaciones adicionales si lo necesitas
+        return payload
+    except jwt.ExpiredSignatureError:
+        raise HTTPException(status_code=401, detail="Token expirado")
+    except jwt.InvalidTokenError:
+        raise HTTPException(status_code=401, detail="Token inválido")
