@@ -1,5 +1,5 @@
 from schemas.users import User, UpdateUser, CreateUserIn, LoginUser
-from models import UserDB
+from models.users import UserDB
 from services.cnx import SessionLocal
 import uuid
 from middlewares.auth import hash_password

@@ -1,5 +1,5 @@
 from schemas.tasks import Task, UpdateTask, CreateTaskIn, CompletedTask
-from models import TaskDB
+from models.tasks import TaskDB
 from services.cnx import SessionLocal
 import uuid
 from datetime import datetime
