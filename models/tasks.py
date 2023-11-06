@@ -2,10 +2,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import String, Text, Boolean, DateTime
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import DeclarativeBase
-
-class Base(DeclarativeBase):
-    pass
+from services.cnx import Base
 
 class TaskDB(Base):
     __tablename__ = "tasks"
