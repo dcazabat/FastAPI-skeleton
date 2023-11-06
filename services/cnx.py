@@ -8,7 +8,7 @@ from models import Base
 engine = create_engine(STRCNX)
 
 # Pimer inicio de la Aplicacion debo saber si la base de datos esta creada o no
-if not database_exists(engine.url):
-    create_database(engine.url)
-    Base.metadata.create_all(bind=engine)
+# if not database_exists(engine.url):
+#     create_database(engine.url)
+#     Base.metadata.create_all(bind=engine)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

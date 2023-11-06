@@ -4,8 +4,6 @@ from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from sqlalchemy.orm import DeclarativeBase
 
-from datetime import datetime
-
 class Base(DeclarativeBase):
     pass
 
