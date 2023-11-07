@@ -13,7 +13,7 @@ class User(Base):
     email = Column(String(100))
     password = Column(String(100), nullable=False)
     deleted = Column(Boolean, default=False)
-    tasks = relationship('TaskDB', backref='users', lazy=True)
+    tasks = relationship('Task', backref='users', lazy=True)
    
     def __repr__(self) -> str:
         return f"User(id={self.id!r}, firstname={self.firstName!r}, lastname={self.lastName!r})"
