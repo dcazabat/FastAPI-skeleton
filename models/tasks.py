@@ -4,7 +4,7 @@ from sqlalchemy import Column
 from sqlalchemy.orm import relationship
 from models import Base
 
-class TaskDB(Base):
+class Task(Base):
     __tablename__ = "tasks"
     id = Column(String(50), primary_key=True, default="")
     title = Column(String(100), nullable=False)

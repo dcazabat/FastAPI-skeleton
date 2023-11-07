@@ -1,7 +1,6 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
-from fastapi.encoders import jsonable_encoder
 from schemas.users import *
 from services.users import *
 from middlewares.auth import create_access_token

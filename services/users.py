@@ -1,6 +1,6 @@
 from schemas.users import *
 from models.users import User
-from services.cnx import SessionLocal
+from config.cnx import SessionLocal
 import uuid
 from middlewares.auth import hash_password
 
@@ -51,7 +51,7 @@ def createUser(user: CreateUserIn):
         db.rollback()
         raise e
     finally:
-        db.close_all()
+        db.close()
 
 # Function to get update the "User" is used in "PUT" methods
 def updateUser(user: UpdateUser):
@@ -65,7 +65,7 @@ def updateUser(user: UpdateUser):
             updated_user.email=user.email
             updated_user.password=user.password
             db.commit()
-            # db.refresh(updated_user)
+            db.refresh(updated_user)
             return updated_user
         return None
     except Exception as e:
@@ -83,8 +83,9 @@ def deleteUser(user: DeleteUser):
             delete_user.deleted = True
             db.commit()
             db.refresh(delete_user)
-        db.close()
-        return delete_user
+            db.close()
+            return delete_user
+        return None
     except Exception as e:
         raise e
     finally:
