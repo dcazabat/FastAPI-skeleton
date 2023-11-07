@@ -30,7 +30,7 @@ async def get_task(id_user: str, id: str):
     except Exception as e:
         raise HTTPException(status_code=503, detail=f"Error getting task {id}: {e}")
 
-@task.post('/',response_model=TaskOut, status_code=200)
+@task.post('',response_model=TaskOut, status_code=200)
 async def create_task(task: CreateTaskIn):
     try:
         new_task = createTask(task=task)
@@ -40,7 +40,7 @@ async def create_task(task: CreateTaskIn):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Internal Server Error: Task creation failed: {e}")
 
-@task.put('/',response_model=TaskOut, status_code=200)
+@task.put('',response_model=TaskOut, status_code=200)
 async def update_task(task: UpdateTask):
     try:
         updatedTask = updateTask(task=task)
@@ -50,7 +50,7 @@ async def update_task(task: UpdateTask):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Update Failed for Task ID: {id}, Error {e}")
 
-@task.patch('/',response_model=TaskOut, status_code=200)
+@task.patch('',response_model=TaskOut, status_code=200)
 async def completed_task(task: CompletedTask):
     try:
         completedTask = completTask(task=task)
@@ -60,7 +60,7 @@ async def completed_task(task: CompletedTask):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Completed Failed for Task ID: {id}, Error {e}")
 
-@task.delete('/',response_model=TaskOut, status_code=200)
+@task.delete('',response_model=TaskOut, status_code=200)
 async def delete_task(task: DeletedTask):
     try:
         deletedTask = deleteTask(task=task)

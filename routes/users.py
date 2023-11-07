@@ -43,7 +43,7 @@ async def create_user(user: CreateUserIn):
     except Exception as e:
         return HTTPException(status_code=500, detail=f"Internal Server Error: User creation failed: {e}")
 
-@user.put('/{id}', response_model=UserOut, status_code=200)
+@user.put('', response_model=UserOut, status_code=200)
 async def update_user(user: UpdateUser):
     try:
         updatedUser = updateUser(user=user)
@@ -53,7 +53,7 @@ async def update_user(user: UpdateUser):
     except Exception as e:
         raise HTTPException(status_code=501, detail=f"Update Failed for User ID: {id}, Error {e}")
 
-@user.delete('/{id}', response_model=UserOut, status_code=200)
+@user.delete('', response_model=UserOut, status_code=200)
 async def delete_user(user: DeleteUser):
     try:
         deleteUser = deleteUser(user=user)
