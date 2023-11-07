@@ -7,14 +7,6 @@ class LoginUser(BaseModel):
     name: str
     password: str
 
-class CreateUserOut(BaseModel):
-    id: str
-    name: str
-    firstName: str
-    lastName: str
-    email: str
-    password: str
-
 class CreateUserIn(BaseModel):
     name: str
     firstName: str
@@ -22,24 +14,23 @@ class CreateUserIn(BaseModel):
     email: str
     password: str
 
-class GetUser(BaseModel):
-    id: str = str(uuid.uuid4())
+class UserOut(BaseModel):
+    id: str
     name: str
     firstName: str
     lastName: str
     email: str
 
-class User(BaseModel):
+class DeleteUser(BaseModel):
     id: str = str(uuid.uuid4())
-    name: str
-    firstName: str
-    lastName: str
-    email: str
-    password: str
     deleted: bool = False
 
+class ChangePassword(BaseModel):
+    id: str = str(uuid.uuid4())
+    password: str
+
 class UpdateUser(BaseModel):
+    id: str = str(uuid.uuid4())
     firstName: str
     lastName: str
     email: str
-    password: str

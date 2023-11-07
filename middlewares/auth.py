@@ -16,7 +16,7 @@ def hash_password(password: str) -> str:
     # Codifica la contraseña en bytes antes de hashearla
     password_bytes = password.encode('utf-8')
     # Utiliza la sal almacenada
-    hashed_password = bcrypt.hashpw(password_bytes, os.getenv('SECRET_KEY'))
+    hashed_password = bcrypt.hashpw(password_bytes, os.getenv('SECRET_KEY').encode('utf-8'))
     return hashed_password.decode('utf-8')
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):

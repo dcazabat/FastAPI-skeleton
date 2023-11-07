@@ -2,11 +2,11 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import String, Integer, Text, Boolean, DateTime
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
-from services.cnx import Base
+from models import Base
 
-class UserDB(Base):
+class User(Base):
     __tablename__ = "users"
-    id = Column(String(50), primary_key=True, default="")
+    id = Column(String(50), primary_key=True, default='')
     name = Column(String(100), nullable=False)
     firstName = Column(String(100))
     lastName = Column(String(100))

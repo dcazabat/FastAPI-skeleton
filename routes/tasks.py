@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
 from schemas.tasks import Task, UpdateTask, CreateTaskIn, CreateTaskOut, CompletedTask
-from services.taskdb import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB, completTaskDB
+from services.tasks import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB, completTaskDB
 from typing import List
 
 task = APIRouter()

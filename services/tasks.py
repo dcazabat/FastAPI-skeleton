@@ -45,6 +45,7 @@ def createTaskDB(id_user: str, task: CreateTaskIn):
                         title=task.title,
                         summary=task.summary,
                         )
+        print(new_task)
         db.add(new_task)
         db.commit()
         db.refresh(new_task)
