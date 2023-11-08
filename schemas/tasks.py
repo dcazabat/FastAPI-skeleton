@@ -3,32 +3,13 @@ from datetime import datetime
 from typing import Text
 import uuid
 
-# For Users
-class CreateUser(BaseModel):
-    name: str
-    firstName: str
-    lastName: str
-    email: str
-    password: str
+class CreateTaskIn(BaseModel):
+    title: str
+    summary: Text
 
-class User(BaseModel):
+class CreateTaskOut(BaseModel):
     id: str = str(uuid.uuid4())
-    name: str
-    firstName: str
-    lastName: str
-    email: str
-    password: str
-    deleted: bool = False
-
-class UpdateUser(BaseModel):
-    firstName: str
-    lastName: str
-    email: str
-    password: str
-
-
-# For Tasks
-class CreateTask(BaseModel):
+    id_user: str = str(uuid.uuid4())
     title: str
     summary: Text
 
@@ -38,7 +19,7 @@ class Task(BaseModel):
     title: str
     summary: Text
     dateIni: datetime = datetime.now()
-    dateEnd: datetime
+    dateEnd: datetime = datetime(1900, 1, 1, 0, 0, 0)
     completed: bool = False
     deleted: bool = False
 

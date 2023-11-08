@@ -1,13 +1,15 @@
-from schemas import Task, UpdateTask, CreateTask, CompletedTask
+from schemas.tasks import Task, UpdateTask, CreateTaskIn, CompletedTask
 from models import TaskDB
-from methods.cnx import SessionLocal
-
+from services.cnx import SessionLocal
+import uuid
+from datetime import datetime
 
 # Function to get all task 
 def getTasks(id_user: str):
     try:
         db = SessionLocal()
         tasks = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.deleted == False).all()
+        # print(tasks)
         if tasks:
             db.close()
             return tasks
@@ -32,13 +34,17 @@ def getTaskDB(id_user: str, id: str):
         db.close()
 
 # Creation of "Task" is used in the "POST" method
-def createTaskDB(id_user: str, task: CreateTask):
+def createTaskDB(id_user: str, task: CreateTaskIn):
     try:
         db = SessionLocal()
-        new_task = TaskDB(id_user=id_user,
-                          title=task.title,
-                          summary=task.summary,
-                          )
+        new_task = TaskDB(
+                        id=str(uuid.uuid4()),
+                        id_user=id_user,
+                        dateIni = datetime.now(),
+                        dateEnd = datetime(1900,1,1,0,0,0),
+                        title=task.title,
+                        summary=task.summary,
+                        )
         db.add(new_task)
         db.commit()
         db.refresh(new_task)
