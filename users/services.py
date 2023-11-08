@@ -1,5 +1,5 @@
-from schemas.users import *
-from models.users import User
+from users.dto import *
+from users.entity import User
 from config.cnx import SessionLocal
 import uuid
 from middlewares.auth import hash_password

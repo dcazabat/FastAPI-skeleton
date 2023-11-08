@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
-from schemas.users import *
-from services.users import *
+from users.dto import *
+from users.services import *
 from middlewares.auth import create_access_token
 from typing import List
 

@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
-from schemas.tasks import *
-from services.tasks import *
+from tasks.dto import *
+from tasks.services import *
 from typing import List
 
 task = APIRouter()

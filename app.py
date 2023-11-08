@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from models import Base
+from default.basemodel import Base
 from config.cnx import engine
-from routes.routeapp import default
-from routes.users import user
-from routes.tasks import task
+# Import Routes
+from default.routes import default
+from users.routes import user
+from tasks.routes import task
 
 app = FastAPI(
     openapi_tags=[{
