@@ -1,6 +1,6 @@
-from schemas.tasks import Task, UpdateTask, CreateTaskIn, CompletedTask
-from models import TaskDB
-from services.cnx import SessionLocal
+from schemas.tasks import *
+from models.tasks import Task
+from config.cnx import SessionLocal
 import uuid
 from datetime import datetime
 
@@ -8,7 +8,7 @@ from datetime import datetime
 def getTasks(id_user: str):
     try:
         db = SessionLocal()
-        tasks = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.deleted == False).all()
+        tasks = db.query(Task).filter(Task.id_user == id_user, Task.deleted == False).all()
         # print(tasks)
         if tasks:
             db.close()
@@ -20,10 +20,10 @@ def getTasks(id_user: str):
         db.close()
 
 # Function to get one task
-def getTaskDB(id_user: str, id: str):
+def getTask(id_user: str, id: str):
     try:
         db = SessionLocal()
-        task = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.id == id).first()
+        task = db.query(Task).filter(Task.id_user == id_user, Task.id == id).first()
         if task:
             db.close()
             return task
@@ -34,12 +34,12 @@ def getTaskDB(id_user: str, id: str):
         db.close()
 
 # Creation of "Task" is used in the "POST" method
-def createTaskDB(id_user: str, task: CreateTaskIn):
+def createTask(task: CreateTaskIn):
     try:
         db = SessionLocal()
-        new_task = TaskDB(
+        new_task = Task(
                         id=str(uuid.uuid4()),
-                        id_user=id_user,
+                        id_user=task.id_user,
                         dateIni = datetime.now(),
                         dateEnd = datetime(1900,1,1,0,0,0),
                         title=task.title,
@@ -56,20 +56,20 @@ def createTaskDB(id_user: str, task: CreateTaskIn):
         db.close()
 
 # Function to get update the "task", used in "PUT" methods
-def updateTaskDB(id_user:str,  id: str, updated_task: UpdateTask):
+def updateTask(task: UpdateTask):
     try:
         db = SessionLocal()
-        task = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.id == id).first()
+        update_task = db.query(Task).filter(Task.id_user == task.id_user, Task.id == task.id).first()
 
-        if task:
-            task.title=updated_task.title
-            task.summary=updated_task.summary
-            task.dateEnd=updated_task.dateEnd
-            task.completed=updated_task.completed
-            db.refresh(task)
+        if update_task:
+            update_task.title=task.title
+            update_task.summary=task.summary
+            update_task.dateEnd=task.dateEnd
+            update_task.completed=task.completed
             db.commit()
+            db.refresh(update_task)
             db.close()
-            return task
+            return update_task
         return None
     except Exception as e:
         db.rollback()
@@ -77,18 +77,18 @@ def updateTaskDB(id_user:str,  id: str, updated_task: UpdateTask):
     finally:
         db.close()
 
-def completTaskDB(id_user:str,  id: str, updated_task: CompletedTask):
+def completTask(task: CompletedTask):
     try:
         db = SessionLocal()
-        task = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.id == id).first()
+        updated_task = db.query(Task).filter(Task.id_user == task.id_user, Task.id == task.id).first()
 
-        if task:
-            task.dateEnd=updated_task.dateEnd
-            task.completed=updated_task.completed
-            db.refresh(task)
+        if updated_task:
+            updated_task.dateEnd=task.dateEnd
+            updated_task.completed=task.completed
             db.commit()
+            db.refresh(updated_task)
             db.close()
-            return task
+            return updated_task
         return None
     except Exception as e:
         db.rollback()
@@ -97,17 +97,17 @@ def completTaskDB(id_user:str,  id: str, updated_task: CompletedTask):
         db.close()
 
 # Function to remove a "task" by their ID
-def deleteTaskDB(id_user: str, id: str):
+def deleteTask(task: DeletedTask):
     try:
         db = SessionLocal()
-        task = db.query(TaskDB).filter(TaskDB.id_user == id_user, TaskDB.id == id).first()
-        if task:
-            task.deleted = True
+        delete_task = db.query(Task).filter(Task.id_user == task.id_user, Task.id == task.id).first()
+        if delete_task:
+            delete_task.deleted = True
             db.commit()
-            db.refresh(task)
+            db.refresh(delete_task)
+            return delete_task
     except Exception as e:
         db.rollback()
         raise e
     finally:
         db.close()
-        return task

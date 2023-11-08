@@ -2,14 +2,9 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import String, Text, Boolean, DateTime
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
-from sqlalchemy.orm import DeclarativeBase
+from models import Base
 
-from datetime import datetime
-
-class Base(DeclarativeBase):
-    pass
-
-class TaskDB(Base):
+class Task(Base):
     __tablename__ = "tasks"
     id = Column(String(50), primary_key=True, default="")
     title = Column(String(100), nullable=False)
