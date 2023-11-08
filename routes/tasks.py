@@ -1,76 +1,67 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
-from fastapi.encoders import jsonable_encoder
-from uuid  import uuid4
-
-# Local imports
-from schemas import Task
-from config import tasks
-
+from schemas import Task, UpdateTask, CreateTask, CompletedTask
+from methods.taskdb import getTasks, getTaskDB, createTaskDB, updateTaskDB, deleteTaskDB, completTaskDB
 
 task = APIRouter()
 
-#Method for Task
-@task.get('/{id_user}', tags=['Tasks'])
+# Method for Task
+@task.get('/{id_user}', response_model=list[Task], tags=['Tasks'])
 async def get_all_task(id_user: str):
-    # Send all task of user
-    task_dict = {}
-    if tasks.__len__() > 0:
-        for task in tasks:
-            if task['id_user'] == id_user and task['deleted'] == False:
-                task_dict[task['id']] = task
-        if task_dict.__len__() > 0:
-            return task_dict
-    # If not found, return 404
-    raise HTTPException(status_code=404, detail=f'task: not found')
+    # Send all users
+    try:
+        tasks = getTasks(id_user=id_user)
+        if tasks:
+            return tasks
+        raise HTTPException(status_code=404, detail=f'Tasks: not found for User ({id_user})')
+    except Exception as e:
+        raise HTTPException(status_code=503,detail=f"Error getting tasks: {e}")
 
 @task.get('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
 async def get_task(id_user: str, id: str):
     # Check if task exists
-    if tasks.__len__() > 0:
-        # Search for task in database
-        task_find = [ task for task in tasks if task['id_user'] == id_user and task['id'] == id and task['deleted'] == False ]
-        if task_find.__len__() > 0:
-            return task_find[0]
-        # If not found, return 404
-        raise HTTPException(status_code=404, detail=f'task: {id} not found')
-    # If not found, return 404
-    raise HTTPException(status_code=404, detail='task: not found')
+    try:
+        task = getTaskDB(id_user=id_user, id=id)
+        if task:
+            return task
+        raise HTTPException(status_code=404, detail=f'Task: {id} not found')
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"Error getting task {id}: {e}")
 
-@task.post('/{id_user}',response_model=Task , tags=['Tasks'])
-async def create_task(id_user: str, task: Task):
-    task.id = str(uuid4())
-    task.id_user = id_user
-    tasks.append(jsonable_encoder(task))
-    return task
+@task.post('/{id_user}',response_model=CreateTask , tags=['Tasks'])
+async def create_task(id_user: str, task: CreateTask):
+    try:
+        new_task = createTaskDB(id_user=id_user, task=task)
+        return new_task
+    except Exception as e:
+        return HTTPException(status_code=500, detail=f"Internal Server Error: Task creation failed: {e}")
 
-@task.put('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
-async def update_task(id_user: str, id: str, task: Task):
-    # Check if task exists
-    if task.__len__() > 0:
-        # Search for task in database
-        task_find = next((i for i, task in enumerate(task) if task['id_user'] == id_user and task["id"] == id and task['deleted'] == False), None)
-        if task_find != None:
-            # These lines should not be there because the "task" parameter contains all the data in addition to the modified ones.
-            task.id_user = id_user
-            task.id = id
-            tasks[task_find] = jsonable_encoder(task)
-            return tasks[task_find]
-        # If not found, return 404
-        raise HTTPException(status_code=404, detail=f'task: {id} not found')
-    # If not found, return 404
-    raise HTTPException(status_code=404, detail='task: not found')
+@task.put('/{id_user}/{id}',response_model=UpdateTask , tags=['Tasks'])
+async def update_task(id_user: str, id: str, task: UpdateTask):
+    try:
+        updatedTask = updateTaskDB(id_user=id_user, id=id, task=task)
+        if updatedTask:
+            return updatedTask
+        raise HTTPException(status_code=404, detail=f'Task: {id} not found')
+    except Exception as e:
+        raise HTTPException(status_code=501, detail=f"Update Failed for Task ID: {id}, Error {e}")
+
+@task.patch('/{id_user}/{id}',response_model=CompletedTask , tags=['Tasks'])
+async def completed_task(id_user: str, id: str, task: CompletedTask):
+    try:
+        completedTask = completTaskDB(id_user=id_user, id=id, task=task)
+        if completedTask:
+            return completedTask
+        raise HTTPException(status_code=404, detail=f'Task: {id} not found')
+    except Exception as e:
+        raise HTTPException(status_code=501, detail=f"Completed Failed for Task ID: {id}, Error {e}")
 
 @task.delete('/{id_user}/{id}',response_model=Task , tags=['Tasks'])
 async def delete_task(id_user: str, id: str):
-    # Check if task exists
-    if task.__len__() > 0:
-        # Search for task in database
-        task_find = next((i for i, task in enumerate(task) if task['id_user'] == {id_user} and task["id"] == id and task['deleted'] == False), None)
-        if task_find != None:
-            task[task_find].deleted = not task[task_find].deleted
-            return task[task_find]
-        # If not found, return 404
-        raise HTTPException(status_code=404, detail=f'task: {id} not found')
-    # If not found, return 404
-    raise HTTPException(status_code=404, detail='task: not found')
+    try:
+        deletedTask = deleteTaskDB(id_user=id_user, id=id)
+        if deletedTask:
+            return deletedTask
+        raise HTTPException(status_code=404, detail=f'Task: {id} not found')
+    except Exception as e:
+        raise HTTPException(status_code=501, detail=f"Update Failed for Task ID: {id}, Error {e}")
