@@ -8,12 +8,16 @@ from users.routes import user
 from tasks.routes import task
 
 app = FastAPI(
-    openapi_tags=[{
-        "Title": "REST API with FastAPI",
-        "description": "CRUD users and tasks",
-        "version": "1.1.0",
-        "name": "CRUD",
-    }]
+    title="REST API with FastAPI",
+    description="CRUD Users and Tasks",
+    version="0.0.1",
+    name='CRUD',
+    # openapi_tags=[{
+    #     "Title": "REST API with FastAPI",
+    #     "description": "CRUD users and tasks",
+    #     "version": "1.1.0",
+    #     "name": "CRUD",
+    # }]
 )
 
 # Origins admited
