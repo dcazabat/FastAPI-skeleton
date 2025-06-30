@@ -42,7 +42,7 @@ def createUser(user: CreateUserIn):
             email=user.email,
             password=hash_password(user.password)
         )
-        print(new_user.name)
+        # print(new_user.name)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -58,11 +58,11 @@ def updateUser(user: UpdateUser):
     try:
         db = SessionLocal()
         updated_user = db.query(User).filter(User.id == user.id).first()
-        print(updated_user)
+        # print(updated_user)
         if updated_user:
-            updated_user.firstName = user.firstName
-            updated_user.lastName = user.lastName
-            updated_user.email = user.email
+            setattr(updated_user, 'firstName', user.firstName)
+            setattr(updated_user, 'lastName', user.lastName)
+            setattr(updated_user, 'email', user.email)
             db.commit()
             db.refresh(updated_user)
             return updated_user
@@ -79,7 +79,7 @@ def deleteUser(user: DeleteUser):
         db = SessionLocal()
         delete_user = db.query(User).filter(User.id == user.id).first()
         if delete_user:
-            delete_user.deleted = True
+            setattr(delete_user, 'deleted', True)
             db.commit()
             db.refresh(delete_user)
             db.close()
@@ -96,8 +96,8 @@ def loginUser(user: LoginUser):
         db = SessionLocal()
         userdb = db.query(User).filter(User.deleted == False, User.name == user.name).first()
         if userdb:
-            print(compare_password(user.password.encode('utf-8'), userdb.password.encode('utf-8')))
-            if compare_password(user.password.encode('utf-8'), userdb.password.encode('utf-8')):
+            # print(compare_password(user.password, str(userdb.password)))
+            if compare_password(user.password, str(userdb.password)):
                 db.close()
                 return userdb
         return None

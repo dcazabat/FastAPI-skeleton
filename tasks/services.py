@@ -62,10 +62,8 @@ def updateTask(task: UpdateTask):
         update_task = db.query(Task).filter(Task.id_user == task.id_user, Task.id == task.id).first()
 
         if update_task:
-            update_task.title=task.title
-            update_task.summary=task.summary
-            update_task.dateEnd=task.dateEnd
-            update_task.completed=task.completed
+            setattr(update_task, 'title', task.title)
+            setattr(update_task, 'summary', task.summary)
             db.commit()
             db.refresh(update_task)
             db.close()
@@ -83,8 +81,8 @@ def completTask(task: CompletedTask):
         updated_task = db.query(Task).filter(Task.id_user == task.id_user, Task.id == task.id).first()
 
         if updated_task:
-            updated_task.dateEnd=task.dateEnd
-            updated_task.completed=task.completed
+            setattr(updated_task, 'dateEnd', task.dateEnd)
+            setattr(updated_task, 'completed', task.completed)
             db.commit()
             db.refresh(updated_task)
             db.close()
@@ -102,7 +100,7 @@ def deleteTask(task: DeletedTask):
         db = SessionLocal()
         delete_task = db.query(Task).filter(Task.id_user == task.id_user, Task.id == task.id).first()
         if delete_task:
-            delete_task.deleted = True
+            setattr(delete_task, 'deleted', True)
             db.commit()
             db.refresh(delete_task)
             return delete_task
