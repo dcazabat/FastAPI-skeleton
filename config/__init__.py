@@ -9,7 +9,7 @@ load_dotenv()
 
 # The .env file must be created with the .env.example format
 # With SQLite
-# STRCNX='sqlite:///mydb.db'
+STRCNX=os.getenv('STRCNX')
 
 ENGINE=os.getenv('ENGINE')
 HOST= os.getenv('HOST')
