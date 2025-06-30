@@ -7,8 +7,9 @@ load_dotenv()
 
 # I configure the database engine and the connection string
 
+# The .env file must be created with the .env.example format
 # With SQLite
-STRCNX='sqlite:///mydb.db'
+# STRCNX='sqlite:///mydb.db'
 
 ENGINE=os.getenv('ENGINE')
 HOST= os.getenv('HOST')

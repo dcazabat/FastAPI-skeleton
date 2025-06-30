@@ -12,7 +12,7 @@ user = APIRouter()
 @user.get('', response_model=List[UserOut], status_code=200)
 async def get_all_users():
     # Send all users
-    try:
+    # try:
         users = getUsers()
         if users:
             return users
