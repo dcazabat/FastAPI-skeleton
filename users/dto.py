@@ -28,7 +28,7 @@ class DeleteUser(BaseModel):
 class ChangePassword(BaseModel):
     id: str = str(uuid.uuid4())
     password: str
-
+    
 class UpdateUser(BaseModel):
     id: str = str(uuid.uuid4())
     firstName: str

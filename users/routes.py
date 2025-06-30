@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi import HTTPException
 from fastapi.responses import JSONResponse
-from schemas.users import *
-from services.users import *
+from users.dto import *
+from users.services import *
 from middlewares.auth import create_access_token
 from typing import List
 
@@ -36,6 +36,7 @@ async def get_user(id: str):
 @user.post('', response_model=UserOut, status_code=200)
 async def create_user(user: CreateUserIn):
     try:
+        print(user)
         newUser = createUser(user=user)
         if newUser:
             return newUser
@@ -46,33 +47,33 @@ async def create_user(user: CreateUserIn):
 @user.put('', response_model=UserOut, status_code=200)
 async def update_user(user: UpdateUser):
     try:
-        updatedUser = updateUser(user=user)
-        if updatedUser:
-            return updatedUser
+        updUser = updateUser(user=user)
+        if updUser:
+            return updUser
         return JSONResponse(status_code=404, content={'message': 'User NOT Update'})
     except Exception as e:
-        raise HTTPException(status_code=501, detail=f"Update Failed for User ID: {id}, Error {e}")
+        raise HTTPException(status_code=501, detail=f"Update Failed for User, Error {e}")
 
 @user.delete('', response_model=UserOut, status_code=200)
 async def delete_user(user: DeleteUser):
     try:
-        deleteUser = deleteUser(user=user)
-        if deleteUser:
-            return deleteUser
+        delUser = deleteUser(user=user)
+        if delUser:
+            return delUser
         return JSONResponse(status_code=404, content={'message': 'User NOT Delete'})
     except Exception as e:
-        raise HTTPException(status_code=501, detail=f"Delete Failed for User ID: {id}, Error {e}")
+        raise HTTPException(status_code=501, detail=f"Delete Failed for User, Error {e}")
 
 @user.post('/login',response_model=dict, status_code=200)
 async def login_user(user: LoginUser):
     # Falta devolver el token
     try:
         userOK = loginUser(user=user)
+        print(userOK)
         if userOK:
-            data = { 'username': userOK.name,
-                     'id': userOK.id}
+            data = { 'username': userOK.name, 'id': userOK.id}
             token = create_access_token(data=data)
             return JSONResponse(status_code=200, content={'token': token})
         return JSONResponse(status_code=404, content={'message': 'User Not Authenticate'})
     except Exception as e:
-        raise HTTPException(status_code=501, detail=f"Server Error for User: {user.name}, Error {e}")
+        raise HTTPException(status_code=501, detail=f"Server Error for User, Error {e}")

@@ -17,7 +17,10 @@ Then install the libraries
 
     pip or pip3 install -f requirements.txt
 
-
 Execute
 
     uvicorn app:app --reload
+
+#### Dependiendo del motor de base de datos son la librerias que se deben instalar, por ejemplo:
+
+- pip install "psycopg[binary]" // Para PostgreSQL

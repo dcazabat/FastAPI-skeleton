@@ -1,5 +1,5 @@
-from schemas.tasks import *
-from models.tasks import Task
+from tasks.dto import *
+from tasks.entity import Task
 from config.cnx import SessionLocal
 import uuid
 from datetime import datetime

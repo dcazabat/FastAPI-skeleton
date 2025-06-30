@@ -1,10 +1,5 @@
 from fastapi import APIRouter
-from fastapi import HTTPException
-from schemas.users import LoginUser
-from middlewares.auth import create_access_token
-from datetime import timedelta
 from dotenv import load_dotenv
-import os
 
 load_dotenv()
 

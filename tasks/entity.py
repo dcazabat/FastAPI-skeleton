@@ -2,7 +2,7 @@ from sqlalchemy import ForeignKey
 from sqlalchemy import String, Text, Boolean, DateTime
 from sqlalchemy import Column
 from sqlalchemy.orm import relationship
-from models import Base
+from default.basemodel import Base
 
 class Task(Base):
     __tablename__ = "tasks"

@@ -5,19 +5,28 @@ from typing import Optional
 from fastapi import HTTPException, Depends
 from fastapi.security import OAuth2PasswordBearer
 import jwt
+from pathlib import Path
 
 from dotenv import load_dotenv
-
-
 load_dotenv()
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+SECRET_KEY = os.getenv('SECRET_KEY', default='your secret key').encode('utf-8')
+
 
 def hash_password(password: str) -> str:
     ''' Returns an encrypted string '''
     # Codifica la contraseña en bytes antes de hashearla
     password_bytes = password.encode('utf-8')
     # Utiliza la sal almacenada
-    hashed_password = bcrypt.hashpw(password_bytes, os.getenv('SECRET_KEY').encode('utf-8'))
+    hashed_password = bcrypt.hashpw(password_bytes, bcrypt.gensalt())
     return hashed_password.decode('utf-8')
+
+def compare_password(password:str, hashed_password: str):
+    ''' Returns with passwords is correct '''
+    return bcrypt.checkpw(password, hashed_password)
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()

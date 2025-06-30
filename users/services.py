@@ -1,10 +1,10 @@
-from schemas.users import *
-from models.users import User
+from users.dto import *
+from users.entity import User
 from config.cnx import SessionLocal
 import uuid
-from middlewares.auth import hash_password
+from middlewares.auth import hash_password, compare_password
 
-# Function to get all Users 
+# Function to get all Users
 def getUsers():
     try:
         db = SessionLocal()
@@ -28,21 +28,21 @@ def getUser(id: str):
             return user
         return None
     except Exception as e:
-        raise e                   
-    
+        raise e
+
 # Creation of "user" is used in the "POST" method
 def createUser(user: CreateUserIn):
     try:
         db = SessionLocal()
-        print(user.name)
         new_user = User(
-                        id=str(uuid.uuid4()),
-                        name=user.name,
-                        firstName=user.firstName, 
-                        lastName=user.lastName, 
-                        email=user.email, 
-                        password=hash_password(user.password)
-                       )
+            id=str(uuid.uuid4()),
+            name=user.name,
+            firstName=user.firstName,
+            lastName=user.lastName,
+            email=user.email,
+            password=hash_password(user.password)
+        )
+        print(new_user.name)
         db.add(new_user)
         db.commit()
         db.refresh(new_user)
@@ -60,10 +60,9 @@ def updateUser(user: UpdateUser):
         updated_user = db.query(User).filter(User.id == user.id).first()
         print(updated_user)
         if updated_user:
-            updated_user.firstName=user.firstName
-            updated_user.lastName=user.lastName
-            updated_user.email=user.email
-            updated_user.password=user.password
+            updated_user.firstName = user.firstName
+            updated_user.lastName = user.lastName
+            updated_user.email = user.email
             db.commit()
             db.refresh(updated_user)
             return updated_user
@@ -91,13 +90,16 @@ def deleteUser(user: DeleteUser):
     finally:
         db.close()
 
+# Function that the user returns if the data entered is correct
 def loginUser(user: LoginUser):
     try:
         db = SessionLocal()
-        user = db.query(User).filter(User.deleted == False, User.name == user.name, User.password == hash_password(user.password)).first()
-        if user:
-            db.close()
-            return user
+        userdb = db.query(User).filter(User.deleted == False, User.name == user.name).first()
+        if userdb:
+            print(compare_password(user.password.encode('utf-8'), userdb.password.encode('utf-8')))
+            if compare_password(user.password.encode('utf-8'), userdb.password.encode('utf-8')):
+                db.close()
+                return userdb
         return None
     except Exception as e:
         raise e
