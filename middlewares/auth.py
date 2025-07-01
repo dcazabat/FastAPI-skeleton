@@ -26,16 +26,16 @@ def hash_password(password: str) -> str:
 
 def compare_password(password:str, hashed_password: str):
     ''' Returns with passwords is correct '''
-    return bcrypt.checkpw(password, hashed_password)
+    return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
     if expires_delta:
         expire = datetime.utcnow() + expires_delta
     else:
-        expire = datetime.utcnow() + timedelta(minutes=float(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES')))
+        expire = datetime.utcnow() + timedelta(minutes=float(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES', '30')))
     to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, os.getenv('SECRET_KEY'), algorithm=os.getenv('ALGORITHM'))
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=os.getenv('ALGORITHM', 'HS256'))
     return encoded_jwt
 
 
@@ -45,7 +45,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 # Middleware para verificar el token JWT
 async def verify_token(token: str = Depends(oauth2_scheme)):
     try:
-        payload = jwt.decode(token, os.getenv('SECRET_KEY'), algorithms=[os.getenv('ALGORITHM')])
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[os.getenv('ALGORITHM', 'HS256')])
         # Aquí podrías realizar validaciones adicionales si lo necesitas
         return payload
     except jwt.ExpiredSignatureError:
